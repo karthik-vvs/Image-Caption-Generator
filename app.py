@@ -7,6 +7,7 @@ from keras.models import Model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from keras.layers import Input, Dense, LSTM, Embedding, Dropout, add
 from pickle import load
+import gdown
 
 # --------------------------
 # Paths & Models
@@ -44,7 +45,21 @@ def define_model(vocab_size, max_length):
     return model
 
 caption_model = define_model(vocab_size, max_length)
-caption_model.load_weights(os.path.join(MODEL_DIR, "model_9.h5"))
+
+# Ensure model directory exists
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# Google Drive file ID
+file_id = "1ulCGMmQ9CVRpuVqA-XMXi-6Byzp1CyiY"
+model_path = os.path.join(MODEL_DIR, "model_9.h5")
+
+# Download the model if it doesn't exist
+if not os.path.exists(model_path):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, model_path, quiet=False)
+
+# Load weights
+caption_model.load_weights(model_path)
 
 # --------------------------
 # Utilities
